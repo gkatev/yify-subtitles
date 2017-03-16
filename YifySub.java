@@ -28,7 +28,7 @@ import java.awt.Desktop;
 
 class YifySub {
 	final static c_reg sub_file_reg = new c_reg("(.*)\\.\\w+$");
-	final static c_reg movie_name_reg = new c_reg("(?:.*\\\\)?(.*)\\.\\w+$");
+	final static c_reg movie_name_reg = new c_reg("(?:.*[\\\\\\/])?(.*)\\.\\w+$");
 	
 	static void show_usage_text() {
 		System.out.println("Usage: java [-cp <classpath>] YifySub -m <path> [-l <language>] [--debug] [--batch]\n"
@@ -68,9 +68,6 @@ class YifySub {
 		}
 		
 		if(full_path == null) show_usage_text();
-		
-		// Make all slashes backward ones
-		full_path = full_path.replace("/", "\\");
 		
 		// Capitalize the first letter of the language
 		language = language.substring(0, 1).toUpperCase() + language.substring(1);
