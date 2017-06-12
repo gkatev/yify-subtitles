@@ -14,15 +14,15 @@ Options:
 	--debug			Displays some debugging information
 	--no-output		Supresses all output. Does not apply to --debug output
 	
-The program works in the following stages:
-	It uses the name and path of the video file to determine the name of the movie and how the subtitle will be saved
-	It will try to extract the movie name from the file name when that is the format of the yify releases
-	Then it will proceed to search for the movie in yifysubtitles.com
-	If more that one result is found, the user is prompted to choose one amongst them
+The algorithm the program follows:
+	It uses the name and path of the video file to determine the name of the movie and how the subtitle will be saved.
+	It will try to extract the movie name from the file name when that is the format of the yify releases.
+	Then it will proceed to search for the movie in yifysubtitles.com.
+	If more that one result is found, the user is prompted to choose one amongst them.
 	If no result is found, the user may enter another movie name to search for.
-	At this point also, if \2 is given (CTRL + B in windows) a browser page to yifysubtitles.com/serch will be opened
+	Also, at this point, if \2 is given (CTRL + B in windows) a browser page to yifysubtitles.com/serch will be opened.
 	Note that in yify releases that follow the standard format a reason for not finding the movie might be dots or colons in the movie name.
 	When the exact movie to download subtitles for has been determined it will search for subtitles in the specified language. 
-	It will neglect subtitles with negative rating. 
-	If subtitles that fit the criteria are found(language, rating) they will be downloaded 
+	It will neglect subtitles with negative rating.
+	If subtitles that fit the criteria are found(language, rating) they will be downloaded.
 	and saved with the same name of the video file and in the same directory.
