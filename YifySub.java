@@ -1,4 +1,4 @@
-/* 	Copyright (C) 2017 George Katevainis-Bitzos
+/* 	Copyright (C) 2017 Georgios Katevainis-Bitzos
 
 	This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -190,7 +190,7 @@ class YifySub {
 		String address = "http://www.yifysubtitles.com/search?q=" + escape(movie_name);
 		address = address.replace(' ', '+');
 		
-		ArrayList<String> search_results = new ArrayList();
+		ArrayList<String> search_results = new ArrayList<String>();
 		String current_result = null;
 		
 		// Read from the page
