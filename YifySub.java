@@ -99,89 +99,97 @@ class YifySub {
 		
 		System.out.println("Searching for '" + movie_name + "'");
 		
-		// Search for subs
-		ArrayList<String> search_results = get_search_results(movie_name);
-		
-		// If not found, give the user the option to choose a new name
-		// Quits when an empty string or EOF is received
-		while(search_results.isEmpty()) {
-			if(!movie_name.equals("\2")) System.out.println("Could not find movie: " + movie_name);
-			System.out.print("Provide another name: ");
+		try {
+			// Search for subs
+			ArrayList<String> search_results = get_search_results(movie_name);
 			
-			// Create scanner and check for EOF
-			Scanner s = new Scanner(System.in);
-			if(!s.hasNextLine()) System.exit(1);
-			
-			// Get movie name
-			movie_name = s.nextLine();
-			
-			// Add an empty line
-			System.out.println("");
+			// If not found, give the user the option to choose a new name
+			// Quits when an empty string or EOF is received
+			while(search_results.isEmpty()) {
+				if(!movie_name.equals("\2")) System.out.println("Could not find movie: " + movie_name);
+				System.out.print("Provide another name: ");
 				
-			// Exit if an empty string was input
-			if(movie_name.equals("")) System.exit(1);
-			
-			if(movie_name.equals("\2")) {
-				Desktop.getDesktop().browse(new URI("http://www.yifysubtitles.com/search"));
-				continue;
+				// Create scanner and check for EOF
+				Scanner s = new Scanner(System.in);
+				if(!s.hasNextLine()) System.exit(1);
+				
+				// Get movie name
+				movie_name = s.nextLine();
+				
+				// Add an empty line
+				System.out.println("");
+					
+				// Exit if an empty string was input
+				if(movie_name.equals("")) System.exit(1);
+				
+				if(movie_name.equals("\2")) {
+					Desktop.getDesktop().browse(new URI("http://www.yifysubtitles.com/search"));
+					continue;
+				}
+				
+				// Search for the movie
+				search_results = get_search_results(movie_name);
 			}
 			
-			// Search for the movie
-			search_results = get_search_results(movie_name);
-		}
-		
-		String movie_link;
-		
-		/* If there are multiple results that fit the 
-			criteria, prompt the user to choose one amongst them */
-		if(search_results.size() > 1) {
-			System.out.println("Mutliple results match the movie name: ");
+			String movie_link;
 			
-			// Print the results
-			for(int i = 0; i < search_results.size(); i++) {
-				System.out.println(i + ". " + get_result_movie_name(search_results.get(i)) + ", " + get_result_year(search_results.get(i)));
+			/* If there are multiple results that fit the 
+				criteria, prompt the user to choose one amongst them */
+			if(search_results.size() > 1) {
+				System.out.println("Mutliple results match the movie name: ");
+				
+				// Print the results
+				for(int i = 0; i < search_results.size(); i++) {
+					System.out.println(i + ". " + get_result_movie_name(search_results.get(i)) + ", " + get_result_year(search_results.get(i)));
+				}
+				
+				System.out.print("Download: ");
+				
+				// If no number was received exit
+				Scanner s = new Scanner(System.in);
+				if(!s.hasNext() || !s.hasNextInt()) System.exit(1);
+				
+				int n = s.nextInt();
+				if(n < 0 || n > search_results.size()) System.exit(1);
+				
+				// Get the movie link of the chosen result
+				movie_link = get_result_address(search_results.get(n)); 
+			} else {
+				System.out.println("Movie Found");
+				movie_link = get_result_address(search_results.get(0));
 			}
 			
-			System.out.print("Download: ");
+			// Attempt to get the link to subtitles of the specified language
+			String sub_link = get_sub_link(movie_link, language);
+				
+			// If null was received, no sub of the specific language was found
+			if(sub_link == null) {
+				System.out.println(language + " subtitles not found");
+				System.in.read();
+				System.exit(1);
+			} else {
+				System.out.println(language + " subtitles found");
+			}
 			
-			// If no number was received exit
-			Scanner s = new Scanner(System.in);
-			if(!s.hasNext() || !s.hasNextInt()) System.exit(1);
+			// Debugging
+			if(debug_mode) {
+				System.out.println("----------");
+				System.out.println("Movie Link: " + sub_link);
+				System.out.println("Subtitle Link: " + sub_link);
+				System.out.println("----------");
+			}
 			
-			int n = s.nextInt();
-			if(n < 0 || n > search_results.size()) System.exit(1);
-			
-			// Get the movie link of the chosen result
-			movie_link = get_result_address(search_results.get(n)); 
-		} else {
-			System.out.println("Movie Found");
-			movie_link = get_result_address(search_results.get(0));
+			download_sub(sub_link, sub_path);
+			System.out.println("Subtitles successfully downloaded");
+
+
+			Thread.sleep(1000);
+
+		} catch ( java.net.UnknownHostException e) {
+			System.out.println("\n * Please check your Internet connection (Connection failed) * ");
+		} catch ( java.net.SocketException e ) {
+			System.out.println("\n * Network is unreachable (Connection failed) * ");
 		}
-		
-		// Attempt to get the link to subtitles of the specified language
-		String sub_link = get_sub_link(movie_link, language);
-		
-		// If null was received, no sub of the specific language was found
-		if(sub_link == null) {
-			System.out.println(language + " subtitles not found");
-			System.in.read();
-			System.exit(1);
-		} else {
-			System.out.println(language + " subtitles found");
-		}
-		
-		// Debugging
-		if(debug_mode) {
-			System.out.println("----------");
-			System.out.println("Movie Link: " + sub_link);
-			System.out.println("Subtitle Link: " + sub_link);
-			System.out.println("----------");
-		}
-		
-		download_sub(sub_link, sub_path);
-		System.out.println("Subtitles successfully downloaded");
-		
-		Thread.sleep(1000);
 	}
 	
 	// Search for a movie and return an arraylist containing the results
