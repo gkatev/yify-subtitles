@@ -1,4 +1,4 @@
-YIFY Subtitles is a simple command line utility used to automatically download subtitles from yifysubtitles.com
+YIFY Subtitles is a simple command line utility to automatically download subtitles from yifysubtitles.com
 
 Basic installation includes simply compiling the source code
 Furthemore, one might find useful to integrate it into the context menu of .mp4 files(almost all yify movies come in mp4 format)
