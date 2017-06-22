@@ -1,10 +1,9 @@
-all: Makefile compile clean
+all: YifySub.jar
 	
-compile: YifySub.java
+YifySub.jar: YifySub.java Makefile
 	javac YifySub.java
 	echo Main-Class: YifySub > MANIFEST.MF
 	jar cfm YifySub.jar MANIFEST.MF *.class
-	
-clean: 
 	rm *.class
 	rm MANIFEST.MF
+	
