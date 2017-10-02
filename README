@@ -4,7 +4,7 @@ Basic installation includes simply compiling the source code
 Furthemore, one might find useful to integrate it into the context menu of .mp4 files(almost all yify movies come in mp4 format)
 In windows this can be easily done in the registry. A simple example reg file (mp4.reg) is provided
 
-Usage: java [-cp <classpath>] YifySub -m <path> [-l <language>] [--debug] [--batch]
+Usage: java -jar <jar_name: yifysub.jar> [-l <language>] [--debug] [--batch] -m <path>
 Options:
 	-m <path>		The path to the video file to download subtitles for
 					Doesn't actually need to point to a valid file,
