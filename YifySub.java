@@ -33,16 +33,16 @@ class YifySub {
 	final static c_reg movie_name_reg = new c_reg("(?:.*[\\\\\\/])?(.*)\\.\\w+$");
 	
 	static void show_usage_text() {
-		System.out.println("Usage: java [-cp <classpath>] YifySub -m <path> [-l <language>] [--debug] [--batch]\n"
-							+ "Options:\n"
-							+ "\t-m <path>\tThe path to the video file to download subtitles for\n"
-							+ "\t\t\tDoesn't actually need to point to a valid file,\n"
-							+ "\t\t\tsince only its name and directory will be used\n"
-							+ "\t\t\tThe subtitles will be downloaded in the same directory\n"
-							+ "\t-l <language>	Language of the subtitles. Defaults to English\n"
-							+ "\t--debug\t\tDisplays some debugging information\n"
-							+ "\t--no-output\tSupresses all output. Does not apply to --debug output\n"
-							);
+		System.out.println("Usage: java -jar <jar_name: yifysub.jar> [-l <language>] [--debug] [--batch] -m <path>");
+		System.out.println("Options:");
+		System.out.println("\t-m <path>\tThe path to the video file to download subtitles for");
+		System.out.println("\t\t\tDoesn't actually need to point to a valid file,");
+		System.out.println("\t\t\tsince only its name and directory will be used");
+		System.out.println("\t\t\tThe subtitles will be downloaded in the same directory");
+		System.out.println("\t-l <language>	Language of the subtitles. Defaults to English");
+		System.out.println("\t--debug\t\tDisplays some debugging information");
+		System.out.println("\t--no-output\tSupresses all output. Does not apply to --debug output");
+		
 		System.exit(1);
 	}
 	
@@ -106,7 +106,9 @@ class YifySub {
 			// If not found, give the user the option to choose a new name
 			// Quits when an empty string or EOF is received
 			while(search_results.isEmpty()) {
-				if(!movie_name.equals("\2")) System.out.println("Could not find movie: " + movie_name);
+				if(!movie_name.equals("\2")) 
+					System.out.println("Could not find movie: " + movie_name);
+				
 				System.out.print("Provide another name: ");
 				
 				// Create scanner and check for EOF
@@ -123,7 +125,8 @@ class YifySub {
 				if(movie_name.equals("")) System.exit(1);
 				
 				if(movie_name.equals("\2")) {
-					Desktop.getDesktop().browse(new URI("http://www.yifysubtitles.com/search"));
+					Desktop.getDesktop().
+						browse(new URI("http://www.yifysubtitles.com/search"));
 					continue;
 				}
 				
@@ -140,7 +143,9 @@ class YifySub {
 				
 				// Print the results
 				for(int i = 0; i < search_results.size(); i++) {
-					System.out.println(i + ". " + get_result_movie_name(search_results.get(i)) + ", " + get_result_year(search_results.get(i)));
+					System.out.println(i + ". " + 
+						get_result_movie_name(search_results.get(i)) + ", " + 
+						get_result_year(search_results.get(i)));
 				}
 				
 				System.out.print("Download: ");
@@ -155,20 +160,21 @@ class YifySub {
 				// Get the movie link of the chosen result
 				movie_link = get_result_address(search_results.get(n)); 
 			} else {
-				System.out.println("Movie Found");
+				//System.out.println("Movie Found");
 				movie_link = get_result_address(search_results.get(0));
 			}
 			
 			// Attempt to get the link to subtitles of the specified language
 			String sub_link = get_sub_link(movie_link, language);
 				
+			System.out.print("Looking for " + language.toLowerCase() + " subtitles... ");
+				
 			// If null was received, no sub of the specific language was found
 			if(sub_link == null) {
-				System.out.println(language + " subtitles not found");
-				System.in.read();
+				System.out.println("not found");
 				System.exit(1);
 			} else {
-				System.out.println(language + " subtitles found");
+				System.out.println("found");
 			}
 			
 			// Debugging
@@ -179,16 +185,18 @@ class YifySub {
 				System.out.println("----------");
 			}
 			
+			System.out.print("Downloading... ");
+			
 			download_sub(sub_link, sub_path);
-			System.out.println("Subtitles successfully downloaded");
+			
+			System.out.println("done");
 
-
-			Thread.sleep(1000);
-
-		} catch ( java.net.UnknownHostException e) {
-			System.out.println("\n * Please check your Internet connection (Connection failed) * ");
-		} catch ( java.net.SocketException e ) {
-			System.out.println("\n * Network is unreachable (Connection failed) * ");
+		} catch (java.net.UnknownHostException e) {
+			System.out.println("error");
+			System.out.println("\n * Please check your internet connection (connection failed)");
+		} catch (java.net.SocketException e) {
+			System.out.println("error");
+			System.out.println("\n * Network is unreachable (connection failed)");
 		}
 	}
 	
@@ -202,7 +210,8 @@ class YifySub {
 		String current_result = null;
 		
 		// Read from the page
-		BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(address).openStream(), "UTF-8"));
+		BufferedReader reader = new BufferedReader(
+			new InputStreamReader(new URL(address).openStream(), "UTF-8"));
 		
 		/* div_count is used to know when all of 
 			the information of a result has been read */
@@ -250,7 +259,8 @@ class YifySub {
 	// The first result per language will be the one with highest rating amongst them
 	// Won't download subs with negative rating
 	static String get_sub_link(String address, String lang) throws Exception {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(address).openStream(), "UTF-8"));
+		BufferedReader reader = new BufferedReader(
+			new InputStreamReader(new URL(address).openStream(), "UTF-8"));
 		
 		String result_line;
 		
@@ -274,14 +284,16 @@ class YifySub {
 			// Extract the result that's currently at the front of the results line
 			String result = result_line.substring(0, result_line.indexOf("</tr>") + "</tr>".length());
 			
-			// If the language is return get_sub_address(result); and the rating is not negative return the address to the result's sub
-			/* If a negative rating has been reached, we know there will be no sub with a positive 
-				rating since, subs of a specific language are sorted according to their rankings */
-			/* Because all of the results are sorted according to their language, alphabetically, when a result 
-				alphabetically lower than $(lang) is reached we know we won't find the subs we are looking for */
+			/* If subtitles for the language are found and the rating is not negative 
+			 * return the address to the result's sub. While looking for subtitles 
+			 * with positive ratings, if we reach a subtitle of negative rating we 
+			 * stop looking, since all subtitles of a single language are sorted 
+			 * according to their rating. We also stop looking if we reach subtitles
+			 * for another language, since all the results for the movie are sorted
+			 * per the language (alphabetically) */
 			if(get_sub_lang(result).equals(lang)) {
 				if(get_sub_rating(result) < 0) return null;
-				return get_sub_address(result);
+				else return get_sub_address(result);
 			} else if(get_sub_lang(result).compareTo(lang) > 0) {
 				return null;
 			}
@@ -295,7 +307,8 @@ class YifySub {
 	
 	// Download the subtitle from sublink and save it in path with name $(movie_name).srt
 	static void download_sub(String sub_link, String sub_path) throws Exception {
-		String zip_name = System.getProperty("java.io.tmpdir") + sub_link.substring(sub_link.lastIndexOf('/'));
+		String zip_name = System.getProperty("java.io.tmpdir") +
+			sub_link.substring(sub_link.lastIndexOf('/'));
 		
 		/* Download the file from sub_link; will be in a zip file */
 		
@@ -418,7 +431,8 @@ class YifySub {
 		
 		result = result.substring(result.indexOf(pf) + pf.length());
 		result = result.replace("/subtitles/", "/subtitle/");
-		return "http://www.yifysubtitles.com" + result.substring(0, result.indexOf(sf)) + ".zip";
+		return "http://www.yifysubtitles.com" + 
+			result.substring(0, result.indexOf(sf)) + ".zip";
 	}
 }
 
