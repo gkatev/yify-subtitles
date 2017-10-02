@@ -396,8 +396,23 @@ class YifySub {
 		
 		Matcher m = Pattern.compile(pattern).matcher(source);
 		
-		if(m.find()) return m.group().replace('.', ' ');
-		else return null;
+		if(m.find()) {
+			String old_name = m.group();
+			StringBuilder sb = new StringBuilder();
+			
+			/* Replace dots with spaces. In the case of multiple subsequent dots,
+			 * change only the last one */
+			for(int i = 0; i < old_name.length(); i++) {
+				if(old_name.charAt(i) == '.') {
+					if(i < old_name.length() - 1 && old_name.charAt(i+1) == '.') sb.append('.');
+					else sb.append(' ');
+				} else {
+					sb.append(old_name.charAt(i));
+				}
+			}
+			
+			return sb.toString();
+		} else return null;
 	}
 	
 	/** Sub Tools */
