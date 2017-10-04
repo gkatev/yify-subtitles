@@ -8,17 +8,21 @@ jar_dir = "/usr/share/java/"
 script = "/usr/bin/yifysub"
 
 all: $(jar_name)
+
+# Compile the source files, add them 
+# 	to the archive and then delete them
+$(jar_name): *.java Makefile
+	javac *.java
 	
-$(jar_name): YifySub.java Makefile
-	javac YifySub.java
-	echo Main-Class: YifySub > MANIFEST.MF
+	echo Main-Class: DirFormat > MANIFEST.MF
 	jar cfm $(jar_name) MANIFEST.MF *.class
+	
 	rm *.class MANIFEST.MF
 	
+# Copy the jar file to its designated location
+# Create the script that runs the jar file and set its permissions
 install: $(jar_name) Makefile
 	cp $(jar_name) $(jar_dir)
-	
-	# Create the script
 	
 	echo "#!/bin/bash" > $(script)
 	
