@@ -1,3 +1,6 @@
+# Name of the class containing the main function
+main = YifySub
+
 # Name to give to the jar file created
 jar_name = yifysub.jar
 
@@ -14,7 +17,7 @@ all: $(jar_name)
 $(jar_name): *.java Makefile
 	javac *.java
 	
-	echo Main-Class: DirFormat > MANIFEST.MF
+	echo Main-Class: $(main) > MANIFEST.MF
 	jar cfm $(jar_name) MANIFEST.MF *.class
 	
 	rm *.class MANIFEST.MF
