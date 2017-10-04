@@ -1,28 +1,52 @@
-YIFY Subtitles is a simple command line utility to automatically download subtitles from yifysubtitles.com
+YIFY Subtitles is a simple command line for downloading subtitles from yifysubtitles.com
 
-Basic installation includes simply compiling the source code
-Furthemore, one might find useful to integrate it into the context menu of .mp4 files(almost all yify movies come in mp4 format)
-In windows this can be easily done in the registry. A simple example reg file (mp4.reg) is provided
+Installation
+	Windows
+	
+	You probably want to compile YifySub.java and either add a batch file to run the
+	program to your PATH variable or incorporate an option to run it from the context
+	menu of .mp4 files (most yify movies come in mp4 format). An example registry 
+	file (mp4.reg) is provided.
+	
+	Linux
+	
+	make
+	sudo make install
+	
+	* Run using 'yifysub'
+	
+	You also probably want to create an alias to run the program with a default language, 
+	thus reducing the required parameters (eg. alias yifysub="yifysub -l English -m").
+	As in windows, you could also incorporate it in the context menu of your file manager.
+
 
 Usage: java -jar <jar_name: yifysub.jar> [-l <language>] [--debug] [--batch] -m <path>
 Options:
 	-m <path>		The path to the video file to download subtitles for
-					Doesn't actually need to point to a valid file,
-					since only its name and directory will be used
-					The subtitles will be downloaded in the same directory
+					Doesn't actually need to to exist (see the algorithm)
 	-l <language>	Language of the subtitles. Defaults to English
 	--debug			Displays some debugging information
 	--no-output		Supresses all output. Does not apply to --debug output
+
 	
 The algorithm the program follows:
-	It uses the name and path of the video file to determine the name of the movie and how the subtitle will be saved.
-	It will try to extract the movie name from the file name when that is the format of the yify releases.
-	Then it will proceed to search for the movie in yifysubtitles.com.
-	If more that one result is found, the user is prompted to choose one amongst them.
-	If no result is found, the user may enter another movie name to search for.
-	Also, at this point, if \2 is given (CTRL + B in windows) a browser page to yifysubtitles.com/serch will be opened.
-	Note that in yify releases that follow the standard format a reason for not finding the movie might be dots or colons in the movie name.
-	When the exact movie to download subtitles for has been determined it will search for subtitles in the specified language. 
-	It will neglect subtitles with negative rating.
-	If subtitles that fit the criteria are found(language, rating) they will be downloaded.
-	and saved with the same name of the video file and in the same directory.
+	The name of the video file is used to attempt and predict the title of the movie.
+	This does not always succeed since the movie title may contain tokes not allowed in
+	the name of the video file (eg. colons). 
+	
+	If the search for the movie turns up empty, the user is prompted to provide another 
+	name for the movie. At this point, entering a '\2' char (CTRL + B in windows) will 
+	start the browser on yifysubtitles.com/search.
+	
+	If instead multiple results match the search term, the user is also prompted to choose
+	one amongst them. This only displays the results of the first page of the search page.
+	
+	When the movie to download subtitles from is found/determined, the program will look
+	for subtitles of the specified language that have a positive rating.
+	
+	If subtitles are found, they will use the path and name of the video file to save the
+	subtitles in the same directory and the same name(excluding the extension).
+	
+	* The name of the video file passed does not need to actually point to an existing
+	  file. Its name is used to determine the title of the movie and its path is used 
+	  to save the subtitles.
