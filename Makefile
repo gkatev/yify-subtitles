@@ -30,6 +30,6 @@ install: $(jar_name) Makefile
 	echo "#!/bin/bash" > $(script)
 	
 	echo >> $(script)
-	echo "java -jar $(jar_dir)"$(jar_name) '$$*' >> $(script)
+	echo "java -jar $(jar_dir)"$(jar_name) '"$$@"' >> $(script)
 	
 	chmod +x $(script)
