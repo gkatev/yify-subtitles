@@ -31,15 +31,13 @@ class YifySub {
 	final static c_reg movie_name_reg = new c_reg("(?:.*[\\\\\\/])?(.*)\\.\\w+$");
 	
 	static void show_usage_text() {
-		System.out.println("Usage: java -jar <jar_name: yifysub.jar> [-l <language>] [--debug] [--batch] -m <path>");
+		System.out.println("Usage: java -jar <jar_name> [-l <language>] [--debug] [--batch] -m <path>");
 		System.out.println("Options:");
-		System.out.println("\t-m <path>\tThe path to the video file to download subtitles for");
-		System.out.println("\t\t\tDoesn't actually need to point to a valid file,");
-		System.out.println("\t\t\tsince only its name and directory will be used");
-		System.out.println("\t\t\tThe subtitles will be downloaded in the same directory");
 		System.out.println("\t-l <language>	Language of the subtitles. Defaults to English");
 		System.out.println("\t--debug\t\tDisplays some debugging information");
 		System.out.println("\t--no-output\tSupresses all output. Does not apply to --debug output");
+		System.out.println("\n\t-m <path>\tThe path to the video file to download subtitles for.");
+		System.out.println("\t\t\tDoesn't actually need to exist (check the README)");
 		
 		System.exit(1);
 	}
