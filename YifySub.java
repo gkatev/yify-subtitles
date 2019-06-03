@@ -1,17 +1,17 @@
-/* 	Copyright (C) 2017 George Katevainis
-
-	This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>. */
+/* Copyright (C) 2017 George Katevenis
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 import java.net.URI;
 import java.net.URL;
@@ -122,7 +122,7 @@ class YifySub {
 				
 				if(movie_name.equals("\2")) {
 					Desktop.getDesktop().
-						browse(new URI("http://www.yifysubtitles.com/search"));
+						browse(new URI("https://www.yifysubtitles.com/search"));
 					continue;
 				}
 				
@@ -199,7 +199,7 @@ class YifySub {
 	// Search for a movie and return an arraylist containing the results
 	static ArrayList<String> get_search_results(String movie_name) throws Exception {
 		// The address to the search page for the specific movie name
-		String address = "http://www.yifysubtitles.com/search?q=" + escape(movie_name);
+		String address = "https://www.yifysubtitles.com/search?q=" + escape(movie_name);
 		address = address.replace(' ', '+');
 		
 		ArrayList<String> search_results = new ArrayList<String>();
@@ -370,7 +370,7 @@ class YifySub {
 		String sf = "\">";
 		
 		result = result.substring(result.indexOf(pf) + pf.length());
-		return "http://www.yifysubtitles.com" + result.substring(0, result.indexOf(sf));
+		return "https://www.yifysubtitles.com" + result.substring(0, result.indexOf(sf));
 	}
 	
 	// Return year of a specific result
@@ -442,7 +442,7 @@ class YifySub {
 		
 		result = result.substring(result.indexOf(pf) + pf.length());
 		result = result.replace("/subtitles/", "/subtitle/");
-		return "http://www.yifysubtitles.com" + 
+		return "https://www.yifysubtitles.com" +
 			result.substring(0, result.indexOf(sf)) + ".zip";
 	}
 }
