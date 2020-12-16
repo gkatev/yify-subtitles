@@ -27,6 +27,10 @@ import java.util.regex.Pattern;
 import java.awt.Desktop;
 
 class YifySub {
+	// final static String site_url = "https://www.yifysubtitles.com";
+	final static String site_url = "https://yifysubtitles.org";
+	// final static String site_url = "https://yts-subs.com";
+	
 	final static c_reg sub_file_reg = new c_reg("(.*)\\.\\w+$");
 	final static c_reg movie_name_reg = new c_reg("(?:.*[\\\\\\/])?(.*)\\.\\w+$");
 	
@@ -122,7 +126,7 @@ class YifySub {
 				
 				if(movie_name.equals("\2")) {
 					Desktop.getDesktop().
-						browse(new URI("https://www.yifysubtitles.com/search"));
+						browse(new URI(site_url + "/search"));
 					continue;
 				}
 				
@@ -139,7 +143,7 @@ class YifySub {
 				
 				// Print the results
 				for(int i = 0; i < search_results.size(); i++) {
-					System.out.println(i + ". " + 
+					System.out.println((i+1) + ". " +
 						get_result_movie_name(search_results.get(i)) + ", " + 
 						get_result_year(search_results.get(i)));
 				}
@@ -154,7 +158,7 @@ class YifySub {
 				if(n < 0 || n > search_results.size()) System.exit(1);
 				
 				// Get the movie link of the chosen result
-				movie_link = get_result_address(search_results.get(n)); 
+				movie_link = get_result_address(search_results.get(n-1)); 
 			} else {
 				//System.out.println("Movie Found");
 				movie_link = get_result_address(search_results.get(0));
@@ -199,7 +203,7 @@ class YifySub {
 	// Search for a movie and return an arraylist containing the results
 	static ArrayList<String> get_search_results(String movie_name) throws Exception {
 		// The address to the search page for the specific movie name
-		String address = "https://www.yifysubtitles.com/search?q=" + escape(movie_name);
+		String address = site_url + "/search?q=" + escape(movie_name);
 		address = address.replace(' ', '+');
 		
 		ArrayList<String> search_results = new ArrayList<String>();
@@ -258,18 +262,27 @@ class YifySub {
 		BufferedReader reader = new BufferedReader(
 			new InputStreamReader(new URL(address).openStream(), "UTF-8"));
 		
-		String result_line;
+		StringBuilder rlsb = new StringBuilder();
 		
-		// Search for the line containing the sub results and stop when it's found
-		// At the time of writing, all sub results are on a single line
-		for(result_line = reader.readLine(); result_line != null; result_line = reader.readLine()) {
-			if(result_line.contains("<tr data-id=\"")) break;
+		/* Search for the sub results. The legacy code expected that
+		 * all the results are on a single line, which has since changed.
+		 * Let's concatenate all the lines into a single one, because if
+		 * I start changing too much this I will end up re-writing the
+		 * whole program. */
+		for(String line = reader.readLine(); line != null; line = reader.readLine()) {
+			if(rlsb.length() > 0 || line.contains("<tr data-id=\""))
+				rlsb.append(line);
+			else if(line.contains("</tbody>"))
+				break;
 		}
 		
 		reader.close();
 		
 		// Make sure the results where found
-		if(result_line == null) return null;
+		if(rlsb.length() == 0)
+			return null;
+		
+		String result_line = rlsb.toString();
 		
 		// Iterate through the results_line
 		while(result_line.contains("<tr data-id=\"")) {
@@ -280,16 +293,15 @@ class YifySub {
 			// Extract the result that's currently at the front of the results line
 			String result = result_line.substring(0, result_line.indexOf("</tr>") + "</tr>".length());
 			
-			/* If subtitles for the language are found and the rating is not negative 
-			 * return the address to the result's sub. While looking for subtitles 
-			 * with positive ratings, if we reach a subtitle of negative rating we 
-			 * stop looking, since all subtitles of a single language are sorted 
-			 * according to their rating. We also stop looking if we reach subtitles
-			 * for another language, since all the results for the movie are sorted
-			 * per the language (alphabetically) */
+			/* If subtitles for the language are found and the rating is not
+			 * negative return the address to the result's sub. While looking
+			 * for subtitles, we stop if we reach subtitles for another
+			 * language, since all the results for the movie are sorted per
+			 * the language (alphabetically). They also used to be sorted by
+			 * rating, but alas, that is not the case anymore. */
 			if(get_sub_lang(result).equals(lang)) {
-				if(get_sub_rating(result) < 0) return null;
-				else return get_sub_address(result);
+				if(get_sub_rating(result) >= 0)
+					return get_sub_address(result);
 			} else if(get_sub_lang(result).compareTo(lang) > 0) {
 				return null;
 			}
@@ -370,7 +382,7 @@ class YifySub {
 		String sf = "\">";
 		
 		result = result.substring(result.indexOf(pf) + pf.length());
-		return "https://www.yifysubtitles.com" + result.substring(0, result.indexOf(sf));
+		return site_url + result.substring(0, result.indexOf(sf));
 	}
 	
 	// Return year of a specific result
@@ -379,7 +391,7 @@ class YifySub {
 		String sf = "<small>year</small>";
 		
 		result = result.substring(0, result.indexOf(sf));
-		return Integer.parseInt(result.substring(result.lastIndexOf(pf) + pf.length()));
+		return Integer.parseInt(result.substring(result.lastIndexOf(pf) + pf.length()).trim());
 	}
 	
 	// Used to escape the movie name in urls
@@ -442,7 +454,7 @@ class YifySub {
 		
 		result = result.substring(result.indexOf(pf) + pf.length());
 		result = result.replace("/subtitles/", "/subtitle/");
-		return "https://www.yifysubtitles.com" +
+		return site_url +
 			result.substring(0, result.indexOf(sf)) + ".zip";
 	}
 }
