@@ -1,8 +1,7 @@
 While I am usually keeping this running, it's not actively maintained.
 I was young when I wrote it, mistakes where made :). A complete overhaul with a proper HTML parser is in order. Should be pretty simple. But I'm not sure that it's worth it...
 
-yifysubtitles.com hasn't been functioning for some time now, so I switched to yifysubtitles.org. I have observed some weird search behaviour with it, not sure why. (not finding movies at all, some searches are case sensitive and possibly more)
-A possible solution would be to look up the IMDb ID and use that to directly access the subtitles (seems to work more often than the search). But once again, first paragraph!
+yifysubtitles.com hasn't been functioning for some time now, so I switched to yifysubtitles.org. I have observed some weird search behaviour with it, not sure why (not finding movies at all, some searches are case sensitive and possibly more). A possible solution would be to look up the IMDb ID and use that to directly access the subtitles (seems to work more often than the search). But once again, first paragraph!
 Personally, I also recommend you look into "subliminal".
 
 -----------------------------------------------------------
